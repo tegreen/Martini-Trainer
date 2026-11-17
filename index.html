@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Martini's Obedience Trainer</title>
+
+  <!-- iOS Web App / PWA Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Martini Trainer" />
+  <meta name="theme-color" content="#0B1120" />
+
+  <!-- Embedded SVG App Icon for Home Screen & Manifest -->
+  <link id="apple-touch-icon" rel="apple-touch-icon" />
+  <link id="manifest-link" rel="manifest" />
+
+  <style>
+    :root {
+      --bg-dark: #0B1120;
+      --card-bg: #111827;
+      --card-border: #1F2937;
+      --surface: #1E293B;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --blue-start: #38BDF8;
+      --blue-end: #2563EB;
+      --green: #10B981;
+      --amber: #F59E0B;
+      --amber-bg: rgba(245, 158, 11, 0.12);
+      --amber-border: rgba(245, 158, 11, 0.35);
+      --safe-top: env(safe-area-inset-top, 16px);
+      --safe-bottom: env(safe-area-inset-bottom, 20px);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding-top: calc(var(--safe-top) + 12px);
+      padding-bottom: calc(var(--safe-bottom) + 24px);
+      padding-left: 16px;
+      padding-right: 16px;
+      max-width: 520px;
+      margin: 0 auto;
+      user-select: none;
+    }
+
+    /* Header Card */
+    .header-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .app-badge {
+      width: 46px;
+      height: 46px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, var(--blue-start), var(--blue-end));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .header-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .cheat-btn {
+      background: var(--amber-bg);
+      border: 1px solid var(--amber-border);
+      color: #FBBF24;
+      border-radius: 12px;
+      padding: 8px 11px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-align: left;
+      line-height: 1.2;
+      flex-shrink: 0;
+      transition: transform 0.1s ease;
+    }
+
+    .cheat-btn:active {
+      transform: scale(0.96);
+    }
+
+    /* Mastery Progress */
+    .mastery-bar-wrap {
+      background: rgba(15, 23, 42, 0.7);
+      border-radius: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--card-border);
+    }
+
+    .mastery-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .mastery-track {
+      height: 7px;
+      background: #1E293B;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .mastery-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--blue-start), var(--green));
+      border-radius: 999px;
+      transition: width 0.35s ease;
+    }
+
+    /* Live Session Toolkit */
+    .toolkit-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 18px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    .toolkit-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #CBD5E1;
+      text-transform: uppercase;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    .sound-toggle {
+      background: var(--surface);
+      border: 1px solid #334155;
+      color: #E2E8F0;
+      border-radius: 999px;
+      padding: 5px 11px;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .clicker-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #38BDF8 0%, #2563EB 100%);
+      border: none;
+      border-radius: 16px;
+      padding: 20px 16px;
+      color: #09111E;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+      transition: transform 0.08s ease, filter 0.08s ease;
+      margin-bottom: 12px;
+    }
+
+    .clicker-btn:active {
+      transform: scale(0.97);
+      filter: brightness(1.08);
+    }
+
+    .clicker-main {
+      font-size: 20px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .clicker-sub {
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(9, 17, 30, 0.85);
+    }
+
+    /* Compact Grid for Timer & Reps */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 10px;
+    }
+
+    .sub-panel {
+      background: #0F172A;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .panel-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .duration-pills {
+      display: flex;
+      gap: 4px;
+    }
+
+    .dur-pill {
+      background: var(--surface);
+      border: 1px solid #334155;
+      color: var(--text-muted);
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .dur-pill.active {
+      background: #2563EB;
+      border-color: #3B82F6;
+      color: #FFFFFF;
+    }
+
+    .timer-display {
+      font-size: 28px;
+      font-weight: 800;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+      margin: 4px 0 8px;
+    }
+
+    .timer-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .start-btn {
+      flex: 1;
+      background: var(--green);
+      color: #052E16;
+      border: none;
+      border-radius: 10px;
+      padding: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .start-btn.running {
+      background: #F59E0B;
+      color: #451A03;
+    }
+
+    .icon-btn {
+      background: var(--surface);
+      border: 1px solid #334155;
+      color: #E2E8F0;
+      border-radius: 10px;
+      width: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .reps-display {
+      font-size: 30px;
+      font-weight: 800;
+      color: #FBBF24;
+      text-align: center;
+      margin: 2px 0 8px;
+    }
+
+    .rep-add-btn {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid #334155;
+      color: #F8FAFC;
+      border-radius: 10px;
+      padding: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .rep-add-btn:active {
+      background: #334155;
+    }
+
+    .reset-link {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      text-decoration: underline;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    /* Section Heading */
+    .section-heading {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin: 0 4px 10px;
+    }
+
+    /* Command Cards */
+    .command-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .command-header {
+      padding: 15px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      gap: 12px;
+    }
+
+    .cmd-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cmd-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: rgba(56, 189, 248, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #38BDF8;
+      font-weight: 800;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .cmd-title {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .cmd-cue {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .cmd-badges {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .env-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .env-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #334155;
+    }
+
+    .env-dot.done {
+      background: var(--green);
+    }
+
+    .chevron {
+      color: var(--text-muted);
+      transition: transform 0.2s ease;
+    }
+
+    .command-card.open .chevron {
+      transform: rotate(180deg);
+    }
+
+    .command-body {
+      display: none;
+      padding: 0 16px 16px;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .command-card.open .command-body {
+      display: block;
+    }
+
+    .why-box {
+      background: rgba(56, 189, 248, 0.08);
+      border-left: 3px solid #38BDF8;
+      padding: 10px 12px;
+      border-radius: 0 10px 10px 0;
+      font-size: 13px;
+      color: #E2E8F0;
+      margin: 12px 0;
+    }
+
+    .steps-list {
+      padding-left: 18px;
+      font-size: 13.5px;
+      color: #CBD5E1;
+      margin-bottom: 12px;
+    }
+
+    .steps-list li {
+      margin-bottom: 8px;
+    }
+
+    .steps-list strong {
+      color: #F8FAFC;
+    }
+
+    .goal-box {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 12.5px;
+      color: #A7F3D0;
+      margin-bottom: 14px;
+    }
+
+    .proofing-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .env-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .env-btn {
+      background: #0F172A;
+      border: 1px solid #334155;
+      color: #CBD5E1;
+      border-radius: 10px;
+      padding: 9px 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .env-btn.checked {
+      background: rgba(16, 185, 129, 0.16);
+      border-color: var(--green);
+      color: #6EE7B7;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.8);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--card-bg);
+      border: 1px solid #334155;
+      border-radius: 20px;
+      max-width: 440px;
+      width: 100%;
+      padding: 20px;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .modal-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #FBBF24;
+    }
+
+    .close-btn {
+      background: var(--surface);
+      border: none;
+      color: #F8FAFC;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .tip-item {
+      background: #0F172A;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .tip-item h4 {
+      font-size: 13.5px;
+      color: #38BDF8;
+      margin-bottom: 4px;
+    }
+
+    .tip-item p {
+      font-size: 13px;
+      color: #CBD5E1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header-card">
+    <div class="header-top">
+      <div class="brand-group">
+        <div class="app-badge" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="5"/>
+            <path d="M8.5 12.5 7 21l5-2.5L17 21l-1.5-8.5"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="header-title">Martini's Obedience Trainer</h1>
+          <p class="header-sub">5 Core Urban Commands &bull; Short Focus Sessions</p>
+        </div>
+      </div>
+      <button class="cheat-btn" id="openCheatBtn" type="button">
+        <span>&#10024;</span>
+        <span>Husky<br>Cheat Sheet</span>
+      </button>
+    </div>
+
+    <div class="mastery-bar-wrap">
+      <div class="mastery-label-row">
+        <span>&#127942; Overall Mastery</span>
+        <span id="masteryText">0/15 (0%)</span>
+      </div>
+      <div class="mastery-track">
+        <div class="mastery-fill" id="masteryFill"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Live Session Toolkit -->
+  <section class="toolkit-card" aria-label="Live Session Toolkit">
+    <div class="toolkit-header">
+      <div class="live-indicator">
+        <span class="dot"></span>
+        <span>Live Session Toolkit (One-Hand Ready)</span>
+      </div>
+      <button class="sound-toggle" id="soundToggleBtn" type="button">
+        <span id="soundIcon">&#128266;</span>
+        <span id="soundLabel">Clicker On</span>
+      </button>
+    </div>
+
+    <button class="clicker-btn" id="clickerBtn" type="button">
+      <div class="clicker-main">
+        <span>&#128266;</span>
+        <span>CLICK / "YES!"</span>
+      </div>
+      <div class="clicker-sub">Tap exact second Martini succeeds &rarr; Treat</div>
+    </button>
+
+    <div class="controls-grid">
+      <!-- Timer Panel -->
+      <div class="sub-panel">
+        <div class="panel-top">
+          <span>&#9201; Timer</span>
+          <div class="duration-pills">
+            <button class="dur-pill active" data-mins="5" type="button">5m</button>
+            <button class="dur-pill" data-mins="10" type="button">10m</button>
+          </div>
+        </div>
+        <div class="timer-display" id="timerDisplay">05:00</div>
+        <div class="timer-actions">
+          <button class="start-btn" id="startTimerBtn" type="button">&#9654; Start</button>
+          <button class="icon-btn" id="resetTimerBtn" type="button" title="Reset timer">&#8635;</button>
+        </div>
+      </div>
+
+      <!-- Reps Panel -->
+      <div class="sub-panel">
+        <div class="panel-top">
+          <span>&#128293; Good Reps</span>
+          <button class="reset-link" id="resetRepsBtn" type="button">Reset</button>
+        </div>
+        <div class="reps-display" id="repsDisplay">0</div>
+        <button class="rep-add-btn" id="addRepBtn" type="button">+1 Rep</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Commands List -->
+  <h2 class="section-heading">Martini's 5 Core Commands</h2>
+  <main id="commandsContainer"></main>
+
+  <!-- Husky Cheat Sheet Modal -->
+  <div class="modal-backdrop" id="cheatModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Martini's Husky Cheat Sheet</h3>
+        <button class="close-btn" id="closeCheatBtn" type="button" aria-label="Close">&times;</button>
+      </div>
+      <div class="tip-item">
+        <h4>1. Pay High Wages</h4>
+        <p>Huskies ask "What's in it for me?" Dry kibble won't compete with London pigeons or squirrels. Use tiny cubes of cheddar, boiled chicken, or frankfurter slices.</p>
+      </div>
+      <div class="tip-item">
+        <h4>2. Short &amp; Sweet (5–10 Mins)</h4>
+        <p>Adult Huskies bore easily with repetitive drills. Stop while Martini is still enthusiastic and wanting more—two 5-minute sessions beat one 20-minute slog.</p>
+      </div>
+      <div class="tip-item">
+        <h4>3. Train Before Meals</h4>
+        <p>Practise right before breakfast or dinner when Martini is naturally food-motivated.</p>
+      </div>
+      <div class="tip-item">
+        <h4>4. Say the Cue Once</h4>
+        <p>Repeating "Martini, Martini, Martini" teaches him to tune you out. Say his name or cue once clearly, then help him succeed.</p>
+      </div>
+      <div class="tip-item">
+        <h4>5. Generalise Gradually</h4>
+        <p>Dogs don't generalise well. Master every command <strong>Indoors</strong> first, then in a <strong>Hallway / Garden</strong>, before expecting reliability in a busy <strong>City / Park</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Generate dynamic PNG App Icon & Web App Manifest so iOS Home Screen gets a clean standalone app
+    (function setupPWA() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+
+      const grad = ctx.createLinearGradient(0, 0, 512, 512);
+      grad.addColorStop(0, '#38BDF8');
+      grad.addColorStop(1, '#2563EB');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 512, 512);
+
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = 34;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      // Ribbon badge icon
+      ctx.beginPath();
+      ctx.arc(256, 195, 90, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(195, 270);
+      ctx.lineTo(165, 420);
+      ctx.lineTo(256, 372);
+      ctx.lineTo(347, 420);
+      ctx.lineTo(317, 270);
+      ctx.stroke();
+
+      const iconUrl = canvas.toDataURL('image/png');
+      document.getElementById('apple-touch-icon').href = iconUrl;
+
+      const manifest = {
+        name: "Martini's Obedience Trainer",
+        short_name: "Martini",
+        start_url: ".",
+        display: "standalone",
+        background_color: "#0B1120",
+        theme_color: "#0B1120",
+        icons: [{ src: iconUrl, sizes: "512x512", type: "image/png" }]
+      };
+      const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+      document.getElementById('manifest-link').href = URL.createObjectURL(blob);
+    })();
+
+    // Training Data (British English, customised for Martini)
+    const COMMANDS = [
+      {
+        id: 'name',
+        num: 1,
+        title: 'Name & "Look at Me"',
+        cue: 'Cue: "Martini" / "Look"',
+        why: 'You cannot give any other cue if Martini's brain is locked onto a pigeon, squirrel, or passing cyclist.',
+        steps: [
+          'Hold a high-value treat right near your own eyes or nose.',
+          'Say <strong>"Martini"</strong> once in a warm, upbeat tone.',
+          'The exact split-second his eyes flick up to meet yours, tap <strong>CLICK / "YES!"</strong> and give him the treat.',
+          'Practise indoors first, then move to a quiet hallway, then out on the pavement.'
+        ],
+        goal: 'Martini snaps his head round to make eye contact within 1 second of hearing his name, even on a busy pavement.'
+      },
+      {
+        id: 'leave',
+        num: 2,
+        title: '"Leave It" (Impulse Control)',
+        cue: 'Cue: "Leave it"',
+        why: 'Your primary urban safety net—stops Martini grabbing street rubbish, dropped food, or lunging at distractions.',
+        steps: [
+          'Place a boring treat in your closed fist and hold it out. Let him sniff or paw—<strong>say nothing</strong>.',
+          'The instant he pulls his nose away, tap <strong>CLICK / "YES!"</strong> and reward with a <em>better</em> treat from your other hand.',
+          'Once reliable, put a treat flat on the floor and cover it with your hand if he lunges. Reward as soon as he backs off and looks away.'
+        ],
+        goal: 'Saying "Leave it" makes Martini voluntarily disengage from tempting items on the pavement or grass.'
+      },
+      {
+        id: 'stay',
+        num: 3,
+        title: '"Stay" & Release Cue',
+        cue: 'Cue: "Stay" &rarr; "Okay!"',
+        why: '"Sit" is useless if Martini pops straight back up. A true Stay holds him safely in place until you release him.',
+        steps: [
+          'Ask Martini to <strong>Sit</strong>. Hold an open palm toward him and say <strong>"Stay"</strong>.',
+          'Pause for just <strong>2 seconds</strong>, tap <strong>CLICK / "YES!"</strong>, and feed him <em>while he is still sitting</em>.',
+          'Give your release word (<strong>"Okay!"</strong> or <strong>"Break!"</strong>) and step back to invite him to move.',
+          'Gradually build duration (2s &rarr; 5s &rarr; 15s) before adding distance (1 step &rarr; 3 steps).'
+        ],
+        goal: 'Martini holds a calm sit-stay while you open the front door, wait at kerb edges, or clip on his lead.'
+      },
+      {
+        id: 'walk',
+        num: 4,
+        title: 'Loose-Lead Walking',
+        cue: 'Cue: "With me"',
+        why: 'Stops daily city walks feeling like water-skiing behind a 3-year-old sled dog.',
+        steps: [
+          'Keep treats in the hand closest to Martini, resting right at your hip.',
+          'Start walking. The exact moment the lead goes tight, <strong>stop like a tree</strong>—do not yank or let him pull you another inch.',
+          'Stand completely still until Martini steps back or looks at you, putting slack back in the lead.',
+          'Tap <strong>CLICK / "YES!"</strong>, reward at your hip, and walk on.'
+        ],
+        goal: 'Martini learns that pulling stops all forward motion, while a loose lead keeps the walk moving.'
+      },
+      {
+        id: 'recall',
+        num: 5,
+        title: 'Reliable Recall ("Come")',
+        cue: 'Cue: "Martini, Come!"',
+        why: 'Huskies are famous escape artists with high prey drive; an instant recall on a long line is vital emergency insurance.',
+        steps: [
+          'Clip Martini onto a <strong>10-metre training line</strong> in a quiet park.',
+          'Crouch slightly, call <strong>"Martini, Come!"</strong> in an excited voice, and <strong>jog backward</strong> a few paces to trigger his chase instinct.',
+          'When he reaches you, gently hold his collar and give a "jackpot" of 3–4 treats in a row.',
+          '<strong>Golden Rule:</strong> Never call him to scold him or end fun immediately—coming to you must always pay off.'
+        ],
+        goal: 'Martini turns and sprints straight back to you on a long line, even when sniffing or distracted.'
+      }
+    ];
+
+    const ENVS = [
+      { key: 'indoors', label: 'Indoors', icon: '&#127968;' },
+      { key: 'yard', label: 'Hall / Garden', icon: '&#127807;' },
+      { key: 'city', label: 'City / Park', icon: '&#127961;' }
+    ];
+
+    // State
+    let progress = JSON.parse(localStorage.getItem('martini_progress_v1') || '{}');
+    let reps = parseInt(localStorage.getItem('martini_reps_v1') || '0', 10);
+    let soundEnabled = true;
+    let selectedMinutes = 5;
+    let secondsRemaining = 300;
+    let timerInterval = null;
+    let audioCtx = null;
+
+    // Web Audio Clicker Sound
+    function playClickSound() {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(1400, now);
+        osc.frequency.exponentialRampToValueAtTime(320, now + 0.035);
+
+        gain.gain.setValueAtTime(0.8, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.045);
+      } catch (e) {}
+    }
+
+    function updateRepsUI() {
+      document.getElementById('repsDisplay').textContent = reps;
+      localStorage.setItem('martini_reps_v1', String(reps));
+    }
+
+    function updateMasteryUI() {
+      let total = COMMANDS.length * ENVS.length;
+      let done = 0;
+      COMMANDS.forEach(c => {
+        ENVS.forEach(e => {
+          if (progress[`${c.id}_${e.key}`]) done++;
+        });
+      });
+      const pct = Math.round((done / total) * 100);
+      document.getElementById('masteryText').textContent = `${done}/${total} (${pct}%)`;
+      document.getElementById('masteryFill').style.width = `${pct}%`;
+    }
+
+    function renderCommands() {
+      const container = document.getElementById('commandsContainer');
+      const openIds = new Set(
+        Array.from(container.querySelectorAll('.command-card.open')).map(el => el.dataset.id)
+      );
+      if (openIds.size === 0 && container.children.length === 0) {
+        openIds.add('name'); // Open first command by default
+      }
+
+      container.innerHTML = '';
+      COMMANDS.forEach(cmd => {
+        const card = document.createElement('article');
+        card.className = 'command-card' + (openIds.has(cmd.id) ? ' open' : '');
+        card.dataset.id = cmd.id;
+
+        const dotsHtml = ENVS.map(e => {
+          const isDone = !!progress[`${cmd.id}_${e.key}`];
+          return `<span class="env-dot ${isDone ? 'done' : ''}" title="${e.label}"></span>`;
+        }).join('');
+
+        const stepsHtml = cmd.steps.map(s => `<li>${s}</li>`).join('');
+        const envBtnsHtml = ENVS.map(e => {
+          const checked = !!progress[`${cmd.id}_${e.key}`];
+          return `
+            <button class="env-btn ${checked ? 'checked' : ''}" data-cmd="${cmd.id}" data-env="${e.key}" type="button">
+              <span>${checked ? '&#9989;' : e.icon}</span>
+              <span>${e.label}</span>
+            </button>
+          `;
+        }).join('');
+
+        card.innerHTML = `
+          <div class="command-header">
+            <div class="cmd-left">
+              <div class="cmd-num">${cmd.num}</div>
+              <div>
+                <div class="cmd-title">${cmd.title}</div>
+                <div class="cmd-cue">${cmd.cue}</div>
+              </div>
+            </div>
+            <div class="cmd-badges">
+              <div class="env-dots">${dotsHtml}</div>
+              <span class="chevron">&#9662;</span>
+            </div>
+          </div>
+          <div class="command-body">
+            <div class="why-box"><strong>Why Martini needs it:</strong> ${cmd.why}</div>
+            <ol class="steps-list">${stepsHtml}</ol>
+            <div class="goal-box"><strong>Graduation Goal:</strong> ${cmd.goal}</div>
+            <div class="proofing-title">Proofing Progress (Tap when mastered)</div>
+            <div class="env-grid">${envBtnsHtml}</div>
+          </div>
+        `;
+
+        card.querySelector('.command-header').addEventListener('click', () => {
+          card.classList.toggle('open');
+        });
+
+        card.querySelectorAll('.env-btn').forEach(btn => {
+          btn.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            const key = `${btn.dataset.cmd}_${btn.dataset.env}`;
+            progress[key] = !progress[key];
+            localStorage.setItem('martini_progress_v1', JSON.stringify(progress));
+            renderCommands();
+            updateMasteryUI();
+          });
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    // Timer Logic
+    function formatTime(sec) {
+      const m = String(Math.floor(sec / 60)).padStart(2, '0');
+      const s = String(sec % 60).padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    function updateTimerUI() {
+      document.getElementById('timerDisplay').textContent = formatTime(secondsRemaining);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      const btn = document.getElementById('startTimerBtn');
+      btn.classList.remove('running');
+      btn.innerHTML = '&#9654; Start';
+    }
+
+    document.getElementById('startTimerBtn').addEventListener('click', () => {
+      if (timerInterval) {
+        stopTimer();
+        return;
+      }
+      if (secondsRemaining <= 0) {
+        secondsRemaining = selectedMinutes * 60;
+      }
+      const btn = document.getElementById('startTimerBtn');
+      btn.classList.add('running');
+      btn.innerHTML = '&#10074;&#10074; Pause';
+
+      timerInterval = setInterval(() => {
+        secondsRemaining--;
+        updateTimerUI();
+        if (secondsRemaining <= 0) {
+          stopTimer();
+          playClickSound();
+          setTimeout(playClickSound, 150);
+        }
+      }, 1000);
+    });
+
+    document.getElementById('resetTimerBtn').addEventListener('click', () => {
+      stopTimer();
+      secondsRemaining = selectedMinutes * 60;
+      updateTimerUI();
+    });
+
+    document.querySelectorAll('.dur-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.dur-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        selectedMinutes = parseInt(pill.dataset.mins, 10);
+        stopTimer();
+        secondsRemaining = selectedMinutes * 60;
+        updateTimerUI();
+      });
+    });
+
+    // Clicker & Reps Events
+    document.getElementById('clickerBtn').addEventListener('click', () => {
+      playClickSound();
+      reps++;
+      updateRepsUI();
+    });
+
+    document.getElementById('addRepBtn').addEventListener('click', () => {
+      reps++;
+      updateRepsUI();
+    });
+
+    document.getElementById('resetRepsBtn').addEventListener('click', () => {
+      reps = 0;
+      updateRepsUI();
+    });
+
+    document.getElementById('soundToggleBtn').addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      document.getElementById('soundIcon').innerHTML = soundEnabled ? '&#128266;' : '&#128263;';
+      document.getElementById('soundLabel').textContent = soundEnabled ? 'Clicker On' : 'Muted';
+    });
+
+    // Modal Events
+    const modal = document.getElementById('cheatModal');
+    document.getElementById('openCheatBtn').addEventListener('click', () => modal.classList.add('open'));
+    document.getElementById('closeCheatBtn').addEventListener('click', () => modal.classList.remove('open'));
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.remove('open');
+    });
+
+    // Init
+    updateRepsUI();
+    updateTimerUI();
+    renderCommands();
+    updateMasteryUI();
+  </script>
+</body>
+</html>
