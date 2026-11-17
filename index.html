@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-title" content="Martini Trainer" />
   <meta name="theme-color" content="#0B1120" />
 
-  <!-- Embedded SVG App Icon for Home Screen & Manifest -->
+  <!-- Embedded App Icon for Home Screen & Manifest -->
   <link id="apple-touch-icon" rel="apple-touch-icon" />
   <link id="manifest-link" rel="manifest" />
 
@@ -717,7 +717,7 @@
       </div>
       <div class="tip-item">
         <h4>1. Pay High Wages</h4>
-        <p>Huskies ask "What's in it for me?" Dry kibble won't compete with London pigeons or squirrels. Use tiny cubes of cheddar, boiled chicken, or frankfurter slices.</p>
+        <p>Huskies ask "What's in it for me?" Dry kibble won't compete with city pigeons or squirrels. Use tiny cubes of cheddar, boiled chicken, or frankfurter slices.</p>
       </div>
       <div class="tip-item">
         <h4>2. Short &amp; Sweet (5–10 Mins)</h4>
@@ -793,7 +793,7 @@
         num: 1,
         title: 'Name & "Look at Me"',
         cue: 'Cue: "Martini" / "Look"',
-        why: 'You cannot give any other cue if Martini's brain is locked onto a pigeon, squirrel, or passing cyclist.',
+        why: "You cannot give any other cue if Martini's brain is locked onto a pigeon, squirrel, or passing cyclist.",
         steps: [
           'Hold a high-value treat right near your own eyes or nose.',
           'Say <strong>"Martini"</strong> once in a warm, upbeat tone.',
@@ -925,7 +925,7 @@
         Array.from(container.querySelectorAll('.command-card.open')).map(el => el.dataset.id)
       );
       if (openIds.size === 0 && container.children.length === 0) {
-        openIds.add('name'); // Open first command by default
+        openIds.add('name');
       }
 
       container.innerHTML = '';
